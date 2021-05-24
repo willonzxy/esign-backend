@@ -87,6 +87,15 @@ class HomeController extends Controller {
       }
     }
   }
+  async log(){
+    const {
+      ctx
+    } = this;
+    ctx.logger.info(JSON.stringify(ctx.query,'','\t'));
+    ctx.body = {
+      code:0
+    }
+  }
 }
 
 module.exports = HomeController;
