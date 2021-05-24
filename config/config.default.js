@@ -1,7 +1,7 @@
 /* eslint valid-jsdoc: "off" */
 
 'use strict';
-
+const path = require('path');
 /**
  * @param {Egg.EggAppInfo} appInfo app info
  */
@@ -32,6 +32,10 @@ module.exports = appInfo => {
       csrf: {
         enable:false
       }
+    },
+    logger:{
+      dir:path.resolve(__dirname,'../logs/esgin'),
+      consoleLevel: 'NONE',
     }
   };
 
