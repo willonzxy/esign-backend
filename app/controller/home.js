@@ -61,7 +61,7 @@ class HomeController extends Controller {
           data: ''
         }
       }
-      var img_path = path.join(__dirname,'../../esign-img/',phone + '_' + '.png');
+      var img_path = path.join(__dirname,'../public/esign-img/',phone + '.png');
       var base64 = data.replace(/^data:image\/\w+;base64,/, ""); //去掉图片base64码前面部分data:image/png;base64
       var dataBuffer = Buffer.from(base64, 'base64'); //把base64码转成buffer对象，
       await fs.writeFile(img_path, dataBuffer);
