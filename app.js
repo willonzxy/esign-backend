@@ -11,17 +11,24 @@ module.exports = app => {
                 if(rowNumber > 1){
                     let [nil,seq,storename,storeid,owner,ownerphone] = row.values;
                     !app.user_info && (app.user_info = {});
-                    app.user_info[ownerphone] = {
+                    let info = {
                         seq,
                         storename,
                         storeid,
                         owner,
                         ownerphone
-                    }
+                    };
+                    app.user_info[ownerphone] = info;
+                    (function(phone,_info){
+                        setTimeout(function(){
+                            app.redis.set(phone,_info)
+                        })
+                    })(ownerphone,JSON.stringify(info));
+                    
                 }
             });
             // 未提交的人，转成json
-            !fs.existsSync('./unsubmit.json') && fs.writeFileSync('./unsubmit.json',JSON.stringify(app.user_info,'','\t'))
+            // !fs.existsSync('./unsubmit.json') && fs.writeFileSync('./unsubmit.json',JSON.stringify(app.user_info,'','\t'))
         });
     });
 }

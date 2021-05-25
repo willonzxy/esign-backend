@@ -36,7 +36,15 @@ module.exports = appInfo => {
     logger:{
       dir:path.resolve(__dirname,'../logs/esgin'),
       consoleLevel: 'NONE',
-    }
+    },
+    redis:{
+      client:{
+        port:6379,
+        host:'47.119.148.196',
+        password:'0887910',
+        db:0
+      }
+    },
   };
 
   return {

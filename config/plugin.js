@@ -10,5 +10,9 @@ module.exports = {
     csrf: {
         enable:false
     }
-  }
+  },
+  redis:{
+    enable:true,
+    package:'egg-redis'
+  },
 };

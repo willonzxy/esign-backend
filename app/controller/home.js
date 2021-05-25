@@ -21,20 +21,21 @@ class HomeController extends Controller {
     const {
       phone
     } = ctx.query;
-    console.log(phone);
     // get execl info;
-    if (!app.user_info[phone]) {
+    let info = await app.redis.get(phone);
+    if (!info) {
       return ctx.body = {
         code: -1,
-        message: '对应信息不存在'
+        message: '对应信息不存在或签名信息已提交'
       }
     }
+    info = JSON.parse(info);
     // 返回列表信息
     var date = new Date().toLocaleDateString().split('/')
     return ctx.body = {
       code: 0,
       data: {
-        ...app.user_info[phone],
+        ...info,
         date:`${date[0]}年${date[1]}月${date[2]}日`
       }
     }
@@ -52,8 +53,8 @@ class HomeController extends Controller {
     // 保存图片
     try {
       // 查询提交记录,有提交就提示已提交
-      let submit_info = await fs.readFile(path.join(__dirname,'../../submit.json'));
-      submit_info = JSON.parse(submit_info.toString());
+      let submit_info = await app.redis.get('submit_'+phone);
+      submit_info && (submit_info = JSON.parse(submit_info));
       if (submit_info[phone]) {
         return ctx.body = {
           code: -1,
@@ -65,17 +66,9 @@ class HomeController extends Controller {
       var base64 = data.replace(/^data:image\/\w+;base64,/, ""); //去掉图片base64码前面部分data:image/png;base64
       var dataBuffer = Buffer.from(base64, 'base64'); //把base64码转成buffer对象，
       await fs.writeFile(img_path, dataBuffer);
-      //
-      let unsubmit_info = await fs.readFile(path.join(__dirname,'../../unsubmit.json'));
-      unsubmit_info = JSON.parse(unsubmit_info.toString());
-      submit_info[phone] = unsubmit_info[phone];
-
-      // 已提交
-      await fs.writeFile(path.join(__dirname,'../../submit.json'), JSON.stringify(submit_info, '', '\t'));
-      // console.log(JSON.stringify(submit_info, '', '\t'))
-      // 更新未记录提的人员信息
-      delete unsubmit_info[phone];
-      await fs.writeFile(path.join(__dirname,'../../unsubmit.json'), JSON.stringify(unsubmit_info, '', '\t'));
+      await app.redis.set('submit_'+phone,'done');
+      // 删除已提交的人员信息
+      await app.redis.del(phone);
       ctx.body = {
         code:0,
         message:'提交成功'
