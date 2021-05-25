@@ -56,7 +56,7 @@ class HomeController extends Controller {
       // 查询提交记录,有提交就提示已提交
       let submit_info = await app.redis.get('submit_'+phone);
       submit_info && (submit_info = JSON.parse(submit_info));
-      if (submit_info[phone]) {
+      if (submit_info && submit_info[phone]) {
         return ctx.body = {
           code: -1,
           message: '您的签名信息已提交，无需重复提交',
