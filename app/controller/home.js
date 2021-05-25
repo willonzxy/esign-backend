@@ -22,14 +22,15 @@ class HomeController extends Controller {
       phone
     } = ctx.query;
     // get execl info;
-    let info = await app.redis.get(phone);
-    if (!info) {
+    // let info = await app.redis.get(phone);
+    let info = app.user_info[phone];
+    if (!info) {  
       return ctx.body = {
         code: -1,
-        message: '对应信息不存在或签名信息已提交'
+        message: '对应信息不存在'
       }
     }
-    info = JSON.parse(info);
+    // info = JSON.parse(info);
     // 返回列表信息
     var date = new Date().toLocaleDateString().split('/')
     return ctx.body = {
