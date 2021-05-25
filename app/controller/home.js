@@ -1,5 +1,5 @@
 'use strict';
-
+const dayjs = require('dayjs')
 const Controller = require('egg').Controller;
 // const fs = require('fs').promises;
 const fsCb = require('fs');
@@ -32,12 +32,12 @@ class HomeController extends Controller {
     }
     // info = JSON.parse(info);
     // 返回列表信息
-    var date = new Date().toLocaleDateString().split('/')
+    // var date = new Date().toLocaleDateString().split('/')
     return ctx.body = {
       code: 0,
       data: {
         ...info,
-        date:`${date[0]}年${date[1]}月${date[2]}日`
+        date:dayjs().locale('zh-cn').format(`YYYY年M月D日`)
       }
     }
   }
