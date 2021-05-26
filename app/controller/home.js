@@ -1,7 +1,7 @@
 'use strict';
 const dayjs = require('dayjs')
 const Controller = require('egg').Controller;
-const genDoc = require('../../docx-replace-gen.js');
+const genDoc = require('../../docx-tpl-replacer.js');
 // const fs = require('fs').promises;
 const fsCb = require('fs');
 const fs = fsCb.promises;
@@ -83,10 +83,14 @@ class HomeController extends Controller {
           message:'系统缺少该商户信息，无法完成提交'
         }
       }
-      await genDoc('',path.join(__dirname,'../public/esign-docx/',phone + '.docx'),{
+      await genDoc(path.join(__dirname,'../public/esign-docx/',phone + '.docx'),{
         ...info,
-        date:date || dayjs().locale('zh-cn').format(`YYYY年M月D日`),
-        image:data
+        date:dayjs().locale('zh-cn').format(`YYYY年M月D日`),
+      },{
+        width:3.5,
+        height:0.8,
+        data:dataBuffer,
+        extension:'.png'
       });
       await app.redis.set('submit_'+phone,'done');
       // 删除已提交的人员信息
