@@ -76,7 +76,8 @@ class HomeController extends Controller {
       var dataBuffer = Buffer.from(base64, 'base64'); //把base64码转成buffer对象，
       await fs.writeFile(img_path, dataBuffer);
       // 生成doc
-      if(!app.user_info[phone]){
+      var info = app.user_info[phone];
+      if(!info){
         return ctx.body = {
           code:-1,
           message:'系统缺少该商户信息，无法完成提交'
