@@ -1,6 +1,7 @@
 'use strict';
 const dayjs = require('dayjs')
 const Controller = require('egg').Controller;
+const genDoc = require('../../docx-replace-gen.js');
 // const fs = require('fs').promises;
 const fsCb = require('fs');
 const fs = fsCb.promises;
@@ -49,10 +50,17 @@ class HomeController extends Controller {
     } = this;
     const {
       phone,
-      data
+      data,
+      date
     } = ctx.request.body;
     // 保存图片
     try {
+      if(!phone){
+        return ctx.body = {
+          code:-1,
+          message:'参数非法，缺少手机号'
+        }
+      }
       // 查询提交记录,有提交就提示已提交
       let submit_info = await app.redis.get('submit_'+phone);
       if (submit_info) {
@@ -62,10 +70,23 @@ class HomeController extends Controller {
           data: ''
         }
       }
+      // 生成用户签名
       var img_path = path.join(__dirname,'../public/esign-img/',phone + '.png');
       var base64 = data.replace(/^data:image\/\w+;base64,/, ""); //去掉图片base64码前面部分data:image/png;base64
       var dataBuffer = Buffer.from(base64, 'base64'); //把base64码转成buffer对象，
       await fs.writeFile(img_path, dataBuffer);
+      // 生成doc
+      if(!app.user_info[phone]){
+        return ctx.body = {
+          code:-1,
+          message:'系统缺少该商户信息，无法完成提交'
+        }
+      }
+      await genDoc('',path.join(__dirname,'../public/esign-docx/',phone + '.docx'),{
+        ...info,
+        date:date || dayjs().locale('zh-cn').format(`YYYY年M月D日`),
+        image:data
+      });
       await app.redis.set('submit_'+phone,'done');
       // 删除已提交的人员信息
       await app.redis.del(phone);
