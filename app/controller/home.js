@@ -50,8 +50,7 @@ class HomeController extends Controller {
     } = this;
     const {
       phone,
-      data,
-      date
+      data
     } = ctx.request.body;
     // 保存图片
     try {
@@ -83,9 +82,10 @@ class HomeController extends Controller {
           message:'系统缺少该商户信息，无法完成提交'
         }
       }
+      var date = dayjs().locale('zh-cn').format(`YYYY年M月D日`);
       await genDoc(path.join(__dirname,'../public/esign-docx/',phone + '.docx'),{
         ...info,
-        date:dayjs().locale('zh-cn').format(`YYYY年M月D日`),
+        date,
       },{
         width:3.5,
         height:0.8,
@@ -99,6 +99,7 @@ class HomeController extends Controller {
         code:0,
         message:'提交成功'
       }
+      ctx.logger.info(`submit_${phone}_${date}`);
     } catch (error) {
       ctx.body = {
         code:-1,
