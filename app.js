@@ -19,11 +19,11 @@ module.exports = app => {
                         ownerphone
                     };
                     app.user_info[ownerphone] = info;
-                    (function(phone,_info){
-                        setTimeout(function(){
-                            app.redis.set(phone,_info)
-                        })
-                    })(ownerphone,JSON.stringify(info));
+                    // (function(phone,_info){
+                    //     setTimeout(function(){
+                    //         app.redis.set(phone,_info)
+                    //     })
+                    // })(ownerphone,JSON.stringify(info));
                     
                 }
             });
