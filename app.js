@@ -1,11 +1,12 @@
 // 读取excel文件
 const ExcelJS = require('exceljs');
-const fs = require('fs');
 module.exports = app => {
     app.messenger.once('egg-ready', ()=>{
+        !app.user_info && (app.user_info = {});
         const workbook = new ExcelJS.Workbook();
         workbook.xlsx.readFile('./info.xlsx').then(function () {
             var worksheet = workbook.getWorksheet(1); //获取第一个worksheet
+            // var num = 0;
             worksheet.eachRow(function (row, rowNumber) {
                 // console.log('Row ' + rowNumber + ' = ' + JSON.stringify(row.values));
                 if(rowNumber > 1){
@@ -19,6 +20,7 @@ module.exports = app => {
                         ownerphone
                     };
                     app.user_info[ownerphone] = info;
+                    // num++
                     (function(phone,_info){
                         setTimeout(function(){
                             app.redis.set(phone,_info)
@@ -27,8 +29,7 @@ module.exports = app => {
                     
                 }
             });
-            // 未提交的人，转成json
-            // !fs.existsSync('./unsubmit.json') && fs.writeFileSync('./unsubmit.json',JSON.stringify(app.user_info,'','\t'))
+            // console.log(num)
         }).catch(e=>{
             console.log(e);
         })
