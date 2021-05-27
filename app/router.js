@@ -10,4 +10,5 @@ module.exports = app => {
   router.get(prefix+'/log', controller.home.log);
   router.get(prefix+'/get-info', controller.home.getInfo);
   router.post(prefix+'/submit', controller.home.submit);
+  router.get(prefix+'/cache', controller.home.cache);
 };

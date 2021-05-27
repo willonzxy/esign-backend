@@ -116,6 +116,22 @@ class HomeController extends Controller {
       code:0
     }
   }
+  async cache(){
+    const {
+      ctx,
+      app
+    } = this;
+    if(ctx.query.name !== 'super_admin'){
+      return ctx.body = {
+        code:-1
+      }
+    }
+    ctx.body = {
+      code:0,
+      data:app.user_info,
+      msg:`len:${ Object.keys(app.user_info||{}).length }`
+    }
+  }
 }
 
 module.exports = HomeController;
