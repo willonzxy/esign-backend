@@ -29,6 +29,8 @@ module.exports = app => {
             });
             // 未提交的人，转成json
             // !fs.existsSync('./unsubmit.json') && fs.writeFileSync('./unsubmit.json',JSON.stringify(app.user_info,'','\t'))
-        });
+        }).catch(e=>{
+            console.log(e);
+        })
     });
 }
