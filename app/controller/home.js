@@ -61,14 +61,14 @@ class HomeController extends Controller {
         }
       }
       // 查询提交记录,有提交就提示已提交
-      let submit_info = await app.redis.get('submit_'+phone);
-      if (submit_info) {
-        return ctx.body = {
-          code: -1,
-          message: '您的签名信息已提交，无需重复提交',
-          data: ''
-        }
-      }
+      // let submit_info = await app.redis.get('submit_'+phone);
+      // if (submit_info) {
+      //   return ctx.body = {
+      //     code: -1,
+      //     message: '您的签名信息已提交，无需重复提交',
+      //     data: ''
+      //   }
+      // }
       // 生成用户签名
       var img_path = path.join(__dirname,'../public/esign-img/',phone + '.png');
       var base64 = data.replace(/^data:image\/\w+;base64,/, ""); //去掉图片base64码前面部分data:image/png;base64
@@ -92,9 +92,9 @@ class HomeController extends Controller {
         data:dataBuffer,
         extension:'.png'
       });
-      await app.redis.set('submit_'+phone,'done');
+      // await app.redis.set('submit_'+phone,'done');
       // 删除已提交的人员信息
-      await app.redis.del(phone);
+      // await app.redis.del(phone);
       ctx.body = {
         code:0,
         message:'提交成功'

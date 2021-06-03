@@ -21,11 +21,11 @@ module.exports = app => {
                     };
                     app.user_info[ownerphone] = info;
                     // num++
-                    (function(phone,_info){
-                        setTimeout(function(){
-                            app.redis.set(phone,_info)
-                        })
-                    })(ownerphone,JSON.stringify(info));
+                    // (function(phone,_info){
+                    //     setTimeout(function(){
+                    //         app.redis.set(phone,_info)
+                    //     })
+                    // })(ownerphone,JSON.stringify(info));
                     
                 }
             });
